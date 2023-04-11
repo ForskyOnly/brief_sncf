@@ -1,7 +1,10 @@
-
-import streamlit as st
 import pandas as pd
 import plotly.express as px
+import streamlit as st
+import folium
+from streamlit_folium import folium_static
+
+
 
 
 
@@ -42,3 +45,43 @@ fig.update_layout(
 st.plotly_chart(fig)
 
 fig
+
+
+
+
+################################################################### AFFICHER LA CARTE ###############################################################################
+
+
+df_gare = pd.read_csv("frequentations_gare.csv")
+df_objet_trouve = pd.read_csv("objet_perdus.csv")
+
+
+st.header("Carte de Paris avec le nombre d'objets trouvés en fonction de la fréquentation de voyageur de chaque gare :")
+
+# Convertion la colonne date en type datetime
+df_objet_trouve["Date"] = pd.to_datetime(df_objet_trouve["Date"])
+
+# Crée la possibilité de choisir une année 
+annee = st.selectbox("Sélectionnez une année", df_objet_trouve["Date"].dt.year.unique())
+
+# Crée une sélection  pour choisir les types d'objets
+type_objet = st.multiselect("Sélectionnez le type d'objet", df_objet_trouve["Type_objet"].unique())
+
+# Filtre les objets trouvés en fonction de l'année et du type d'objet 
+df_objet_trouve_filtré = df_objet_trouve[(df_objet_trouve["Date"].dt.year == annee) & (df_objet_trouve["Type_objet"].isin(type_objet))]
+
+# Compte le nombre d'objets trouvés par gare
+df_resultat = df_objet_trouve_filtré.groupby("Nom_gare").size().reset_index(name="objets_trouves")
+
+# Fusionne les données avec les informations de la gare (fréquentation, latitude, longitude)
+df_resultat = df_resultat.merge(df_gare[["nom_gare", "frequentation_" + str(annee), "latitude", "longitude"]], left_on="Nom_gare", right_on="nom_gare")
+
+# Crée une carte de Paris
+paris_carte= folium.Map(location=[48.8566, 2.3522], zoom_start=12)
+
+# Ajoute un pop up pour chaque gare avec les informations sur les objets trouvés et la fréquentation
+for index, row in df_resultat.iterrows():
+    pop_up = f"{row['Nom_gare']}<br>Objets trouvés: {row['objets_trouves']}<br>Fréquentation: {row['frequentation_' + str(annee)]}"
+    folium.Marker([row["latitude"], row["longitude"]], tooltip=pop_up).add_to(paris_carte)
+
+folium_static(paris_carte)
