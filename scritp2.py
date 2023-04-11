@@ -10,7 +10,7 @@ from streamlit_folium import folium_static
 
 
 # Chargement des données
-df_objet_trouve = pd.read_csv("objet_perdus.csv")
+df_objet_trouve = pd.read_csv("objet_perdus_copy.csv")
 
 # Conversion de la colonne "date" au format datetime
 df_objet_trouve["Date"] = pd.to_datetime(df_objet_trouve["Date"])
@@ -52,7 +52,7 @@ st.write("<br>""<br>""<br>""<br>", unsafe_allow_html=True)
 
 
 df_gare = pd.read_csv("frequentations_gare.csv")
-df_objet_trouve = pd.read_csv("objet_perdus.csv")
+df_objet_trouve = pd.read_csv("objet_perdus_copy.csv")
 
 
 st.header("Carte de Paris avec le nombre d'objets trouvés en fonction de la fréquentation de voyageur de chaque gare :")
@@ -90,7 +90,7 @@ st.write("<br>""<br>""<br>""<br>", unsafe_allow_html=True)
 
 
 df_meteo = pd.read_csv("donneemeteo.csv")
-df_objet_trouve = pd.read_csv("objet_perdus.csv")
+df_objet_trouve = pd.read_csv("objet_perdus_copy.csv")
 
 # modifs du nom de colonne
 df_meteo = df_meteo.rename(columns={'time': 'Date'})
