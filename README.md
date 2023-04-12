@@ -1,50 +1,65 @@
-Projet brief_sncf
 
-Ce projet consiste à analyser les données des objets trouvés dans les gares parisiennes de la SNCF entre 2019 et 2022, en utilisant l'API open data de la SNCF et des données météorologiques récupérées sur internet. Le but est de comprendre si la température est corrélée au nombre d'objets trouvés et d'anticiper le volume d'objets perdus pour dimensionner au mieux le service en charge de leur gestion.
-Étapes du projet
+# Brief Find in translation
 
-    Utilisation de l'API open data de la SNCF pour récupérer les données sur les objets trouvés dans les gares parisiennes entre 2019 et 2022. Stockage des données dans une BDD SQL de choix avec un schéma de base de données.
+## Context du projet
 
-    Récupération de la liste des températures journalières sur Paris en France entre 2019 et 2022.
+Le projet consiste à analyser les données des objets trouvés dans les gares parisiennes de la SNCF entre 2019 et 2022, en utilisant l'API open data de la SNCF et des données météorologiques récupérées sur internet. Le but est de comprendre si la température est corrélée au nombre d'objets trouvés et d'anticiper le volume d'objets perdus pour dimensionner au mieux le service en charge de leur gestion.
 
-    Analyse visuelle des données avec Streamlit :
 
-    Calcul du nombre d'objets trouvés par semaine et affichage sur un histogramme plotly.
-    Affichage d'une carte de Paris avec le nombre d'objets trouvés en fonction de la fréquentation des voyageurs de chaque gare. Possibilité de faire varier par année et par type d'objets.
+## Description du projet 
 
-    Analyse des données en vue de la Data Science avec Streamlit :
+Ce projet a été réalisé lors de la formation Dev IA Microsoft by Simplon HDF.
+Ce projet utilise l'API Open data de SNCF pour récupérer les informations de frequentations des gares parisiennes ainsi que les objets perdus dans ces gares. Il comprend également une visualisation de ces informations à l'aide de la bibliothèque Folium et une interface Web construite avec Streamlit.
 
-    Affichage du nombre d'objets trouvés en fonction de la température sur un scatterplot et recherche de corrélation.
-    Calcul de la médiane du nombre d'objets trouvés en fonction de la saison et recherche de corrélation.
-    Affichage du nombre d'objets trouvés en fonction du type d'objet et de la saison et recherche de corrélation.
+## Fonctionnalités
 
-    Intégration de la conclusion globale de l'étude dans Streamlit.
+#### Récupération des données :
 
-    Bonus Data Ingénieur : ajout d'un bouton pour la mise à jour des données de l'application.
+1. Utilisation de l'API open data de la SNCF pour récupérer les données sur les objets trouvés ainsi que la frequentation dans les gares parisiennes entre 2019 et 2022.
+2. Récupération des données météorologiques de Paris entre 2019 et 2022
+3. Stockage des données dans une BDD SQL avec un schéma de base de données.
+4. Créaion de fichier csv pour les données récoltès.
 
-Technologies utilisées
+#### Analyse visuelle des données avec Streamlit :
 
-    Python 3.8
-    Streamlit
-    Pandas
-    Matplotlib
-    Plotly
-    SQL
+5. Calcul du nombre d'objets trouvés par semaine et affichage sur un histogramme
+6. Affichage d'une carte de Paris avec le nombre d'objets trouvés en fonction de la fréquentation des voyageurs de chaque gare. Possibilité de faire varier par année et par type d'objets.
 
-Comment exécuter le code
+#### Analyse des données en vue de la Data Science avec Streamlit :
 
-    Cloner le repo GitHub.
+7. Affichage du nombre d'objets trouvés en fonction de la température sur un scatterplot et recherche de corrélation.
+8. Calcul de la médiane du nombre d'objets trouvés en fonction de la saison et recherche de corrélation.
+9. Affichage du nombre d'objets trouvés en fonction du type d'objet et de la saison et recherche de corrélation.
 
-    Installer les dépendances avec pip install -r requirements.txt.
+## Installation
 
-    Exécuter les scripts dans l'ordre suivant :
+1. Clonez [ce dépôt.](https://github.com/ForskyOnly/brief_sncf)
+2. Installez les dépendances avec `pip install`.
 
-    get_data.py pour récupérer les données de la SNCF et les stocker dans une base de données SQL.
-    get_temperature.py pour récupérer les données de température et les stocker dans un fichier CSV.
-    app.py pour lancer l'application Streamlit.
 
-    Ouvrir l'application Streamlit dans le navigateur.
+## bibliothèque utilisées
 
-Auteur
+- streamlit 
+- pandas as pd
+- plotly.express 
+- altair   
+- folium
+- streamlit_folium 
+- sqlite3
+- requests
+- datetime
 
-Ce projet a été réalisé par un développeur indépendant.
+## Utilisation
+
+- Exécutez tout les notebooks `.ipynb` pour récupérer les informations.
+- Exécutez `streamlit run main.py` pour lancer l'interface Web Streamlit.
+
+## Contributeurs
+
+Ce projet a été réalisé par [Amine](https://github.com/amineelbb) et [Rubic](https://github.com/ForskyOnly)
+
+
+
+## License
+
+Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.

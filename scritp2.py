@@ -2,8 +2,6 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import altair as alt 
-import matplotlib.pyplot as plt
-import seaborn as sns
 import folium
 from streamlit_folium import folium_static
 
