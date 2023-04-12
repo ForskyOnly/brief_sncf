@@ -2,8 +2,6 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import altair as alt 
-import matplotlib.pyplot as plt
-import seaborn as sns
 import folium
 from streamlit_folium import folium_static
 
@@ -161,7 +159,11 @@ fig.update_layout(
 
 st.plotly_chart(fig)
 
+<<<<<<< HEAD
 st.write("On peut observer par ce graphique qu'il n'y a pas de grande difference entre les pertes d'objets et les saisons, donc on peut écarter le lien entre le froid et la perte d'objets par les voyageurs", "<br>""<br>""<br>""<br>", unsafe_allow_html=True)
+=======
+st.write("On peut observer par ce graphique qu'il n'y a pas vraiment de liens  entre les pertes d'objet et les saisons, donc on peut écrater le lien entre la froid et la perte d'objet par les voyageurs", "<br>""<br>""<br>""<br>", unsafe_allow_html=True)
+>>>>>>> b7125ffa757d31af430bec74b052e642e53b6098
 
 
 
