@@ -7,11 +7,17 @@ from streamlit_folium import folium_static
 
 
 ####################################################### BOUTTON METTRE A JOURS ######################################################################################
-if st.button("Mettre à jour toutes les données", use_container_width=True, help="Met à jours les données de fréquentation de la gare, les données de la méteo ainsi que les objets perdus"):
+
+    
+if st.button(label="Mettre à jour les données", help="Mettre à jour les données de fréquentation de la gare, les données de la méteo ainsi que les objets perdus",use_container_width=True):
     df_gare = pd.read_csv("frequentations_gare.csv")
     df_objet_trouve = pd.read_csv("objet_perdus_copy.csv")
     df_meteo = pd.read_csv("donneemeteo.csv")
-    st.write("Les données ont été mises à jour avec succès !")
+    st.write(":green[Les données ont été mises à jour avec succès !]",":white_check_mark:")
+    st.balloons()
+
+    
+    
     
 ############################################## Calculez entre 2019 et 2022 la somme du nombre d’objets trouvés par semaine ###########################################
     
@@ -167,7 +173,7 @@ fig.update_layout(
 
 st.plotly_chart(fig)
 
-st.write("On peut observer par ce graphique qu'il n'y a pas de grande difference entre les pertes d'objets et les saisons, donc on peut écarter le lien entre le froid et la perte d'objets par les voyageurs", "<br>""<br>""<br>""<br>", unsafe_allow_html=True)
+st.write("On peut observer par ce graphique qu'il n'y a pas de lien notable entre la perte d'objets par les voyageurs et les saisons, donc on peut écarter le lien entre le froid et la perte d'objets par les voyageurs", "<br>""<br>""<br>""<br>", unsafe_allow_html=True)
 
 
 
