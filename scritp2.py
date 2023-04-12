@@ -161,7 +161,7 @@ fig.update_layout(
 
 st.plotly_chart(fig)
 
-st.write("On peut observer par ce graphique qu'il n'y a pas de grande difference entre les pertes d'objet et les saisons, donc on peut écrater le lien entre la froid et la perte d'objet par les voyageurs", "<br>""<br>""<br>""<br>", unsafe_allow_html=True)
+st.write("On peut observer par ce graphique qu'il n'y a pas vraiment de liens  entre les pertes d'objet et les saisons, donc on peut écrater le lien entre la froid et la perte d'objet par les voyageurs", "<br>""<br>""<br>""<br>", unsafe_allow_html=True)
 
 
 
