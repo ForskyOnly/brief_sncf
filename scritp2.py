@@ -161,7 +161,7 @@ fig.update_layout(
 
 st.plotly_chart(fig)
 
-st.write("On peut observer par ce graphique qu'il n'y a pas de grande difference entre les pertes d'objet et les saisons, donc on peut écrater le lien entre la froid et la perte d'objet par les voyageurs", "<br>""<br>""<br>""<br>", unsafe_allow_html=True)
+st.write("On peut observer par ce graphique qu'il n'y a pas de grande difference entre les pertes d'objets et les saisons, donc on peut écarter le lien entre le froid et la perte d'objets par les voyageurs", "<br>""<br>""<br>""<br>", unsafe_allow_html=True)
 
 
 
@@ -201,3 +201,5 @@ fig.update_layout(
 )
 
 st.plotly_chart(fig)
+
+st.write("On peut observer de part cet histogramme, qu'il y a en effet une corrélation entre le type d'objets retrouvé et la saison. Le type d'objet Bagagerie est plus retrouvé lors de la saison de l'automne avec 7647 objets suivi de la saison estivale avec 7384 objets respectivement retrouvés. Cela peut etre expliqué notammenet par le départ en vacances des voyageurs souvent chargés en terme de bagages lors des saisons évoquées.", "<br>""<br>""<br>""<br>", unsafe_allow_html=True)
