@@ -6,7 +6,15 @@ import folium
 from streamlit_folium import folium_static
 
 
-
+####################################################### BOUTTON METTRE A JOURS ######################################################################################
+if st.button("Mettre à jour toutes les données", use_container_width=True, help="Met à jours les données de fréquentation de la gare, les données de la méteo ainsi que les objets perdus"):
+    df_gare = pd.read_csv("frequentations_gare.csv")
+    df_objet_trouve = pd.read_csv("objet_perdus_copy.csv")
+    df_meteo = pd.read_csv("donneemeteo.csv")
+    st.write("Les données ont été mises à jour avec succès !")
+    
+############################################## Calculez entre 2019 et 2022 la somme du nombre d’objets trouvés par semaine ###########################################
+    
 # Chargement des données
 df_objet_trouve = pd.read_csv("objet_perdus_copy.csv")
 
