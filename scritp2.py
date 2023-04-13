@@ -11,7 +11,7 @@ from streamlit_folium import folium_static
     
 if st.button(label="Mettre à jour les données", help="Mettre à jour les données de fréquentation de la gare, les données de la méteo ainsi que les objets perdus",use_container_width=True):
     df_gare = pd.read_csv("frequentations_gare.csv")
-    df_objet_trouve = pd.read_csv("objet_perdus_copy.csv")
+    df_objet_trouve = pd.read_csv("objets_perdus.csv")
     df_meteo = pd.read_csv("donneemeteo.csv")
     st.write(":green[Les données ont été mises à jour avec succès !]",":white_check_mark:")
     st.balloons()
@@ -22,7 +22,7 @@ if st.button(label="Mettre à jour les données", help="Mettre à jour les donn�
 ############################################## Calculez entre 2019 et 2022 la somme du nombre d’objets trouvés par semaine ###########################################
     
 # Chargement des données
-df_objet_trouve = pd.read_csv("objet_perdus_copy.csv")
+df_objet_trouve = pd.read_csv("objets_perdus.csv")
 
 # Conversion de la colonne "date" au format datetime
 df_objet_trouve["Date"] = pd.to_datetime(df_objet_trouve["Date"])
@@ -64,7 +64,7 @@ st.write("<br>""<br>""<br>""<br>", unsafe_allow_html=True)
 
 
 df_gare = pd.read_csv("frequentations_gare.csv")
-df_objet_trouve = pd.read_csv("objet_perdus_copy.csv")
+df_objet_trouve = pd.read_csv("objets_perdus.csv")
 
 
 st.header("Carte de Paris avec le nombre d'objets trouvés en fonction de la fréquentation de voyageur de chaque gare :")
@@ -102,7 +102,7 @@ st.write("<br>""<br>""<br>""<br>", unsafe_allow_html=True)
 
 
 df_meteo = pd.read_csv("donneemeteo.csv")
-df_objet_trouve = pd.read_csv("objet_perdus_copy.csv")
+df_objet_trouve = pd.read_csv("objets_perdus.csv")
 
 # modifs du nom de colonne
 df_meteo = df_meteo.rename(columns={'time': 'Date'})

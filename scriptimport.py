@@ -26,11 +26,9 @@ def importer_donnees_gares(urls):
                 
                 for record in records:
                     objet_trouve = {
-                        "Code gare": record["fields"]["gc_obo_gare_origine_r_code_uic_c"],
                         "Nom gare": record["fields"]["gc_obo_gare_origine_r_name"],
                         "Type d'objet": record["fields"]["gc_obo_type_c"],
                         "Nature de l'objet": record["fields"]["gc_obo_nature_c"],
-                        "Type d'enregistrement": record["fields"]["gc_obo_nom_recordtype_sc_c"],
                         "Date": record["fields"]["date"]
                     }
                     data.append(objet_trouve)
