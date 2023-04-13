@@ -8,7 +8,7 @@ import sqlite3
 from datetime import datetime
 
 
-####################################################### BOUTTON METTRE A JOURS ######################################################################################
+################################################################# BOUTTON METTRE A JOURS ########################################################################
 conn = sqlite3.connect('bdd1.db')
     
 if st.button(label="Mettre à jour les données", help="Mettre à jour les données de fréquentation de la gare, les données de la méteo ainsi que les objets perdus", use_container_width=True):
