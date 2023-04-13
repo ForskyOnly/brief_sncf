@@ -4,6 +4,7 @@ import plotly.express as px
 import altair as alt 
 import folium
 from streamlit_folium import folium_static
+import sqlite3
 
 
 ####################################################### BOUTTON METTRE A JOURS ######################################################################################
