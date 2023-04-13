@@ -9,16 +9,15 @@ from datetime import datetime
 
 
 ####################################################### BOUTTON METTRE A JOURS ######################################################################################
-
+conn = sqlite3.connect('bdd1.db')
     
-if st.button(label="Mettre à jour les données", help="Mettre à jour les données de fréquentation de la gare, les données de la méteo ainsi que les objets perdus",use_container_width=True):
-    df_gare = pd.read_csv("frequentations_gare.csv")
-    df_objet_trouve = pd.read_csv("objets_perdus.csv")
-    df_meteo = pd.read_csv("donneemeteo.csv")
-    st.write(":green[Les données ont été mises à jour avec succès !]",":white_check_mark:")
+if st.button(label="Mettre à jour les données", help="Mettre à jour les données de fréquentation de la gare, les données de la méteo ainsi que les objets perdus", use_container_width=True):
+    df_gare = pd.read_sql_query("SELECT * FROM gare", conn)
+    df_objet_trouve = pd.read_sql_query("SELECT * FROM objet_trouve", conn)
+    df_meteo = pd.read_sql_query("SELECT * FROM meteo", conn)
+
+    st.write(":green[Les données ont été mises à jour avec succès !]", ":white_check_mark:")
     st.balloons()
-
-    
     
     
 ############################################## Calculez entre 2019 et 2022 la somme du nombre d’objets trouvés par semaine ###########################################
@@ -111,121 +110,147 @@ st.write("<br>""<br>""<br>""<br>", unsafe_allow_html=True)
 # ########################################################### Nombre d'objets trouvés en fonction de la température ####################################################
 
 
-# df_meteo = pd.read_csv("donneemeteo.csv")
-# df_objet_trouve = pd.read_csv("objets_perdus.csv")
+import sqlite3
+import pandas as pd
+import streamlit as st
+import altair as alt
 
+# Connectez-vous à la base de données
+conn = sqlite3.connect("bdd1.db")
 
-# # creation d'un DF où on les joint 2 DF sur la base de la colonne date
-# df_merged = df_objet_trouve.merge(df_meteo, on='Date')
+# Exécutez une requête pour obtenir toutes les données de la table 'objet_trouve'
+query_objet_trouve = "SELECT * FROM objet_trouve"
+df_objet_trouve = pd.read_sql_query(query_objet_trouve, conn)
 
-# # regroupe et compte le nombre d'objets trouvés par température
-# df_grouped = df_merged.groupby('temperature').size().reset_index(name='nombre_objets_trouves')
+# Exécutez une requête pour obtenir toutes les données de la table 'meteo'
+query_meteo = "SELECT * FROM meteo"
+df_meteo = pd.read_sql_query(query_meteo, conn)
 
-# st.header("Nombre d'objets trouvés en fonction de la température :")
+# Création d'un DataFrame où on joint les deux DataFrames sur la base de la colonne date
+df_merged = df_objet_trouve.merge(df_meteo, left_on='date', right_on='Date')
 
-# # Création d'un scatterplot avec la température sur l'axe  x et objets trouvés sur l'axe y
-# scatterplot = alt.Chart(df_grouped).mark_circle(size=60).encode(
-#     x=alt.X('temperature:Q', title='Température'),
-#     y=alt.Y('nombre_objets_trouves:Q', title="Nombre d'objets trouvés")
-# )
-# st.altair_chart(scatterplot, use_container_width=True)
+# Regroupe et compte le nombre d'objets trouvés par température
+df_grouped = df_merged.groupby('temperature').size().reset_index(name='nombre_objets_trouves')
 
-# # Calcule du coefficient de corrélation
-# correlation = df_grouped['temperature'].corr(df_grouped['nombre_objets_trouves']).__round__(4)
-# st.write("D'après ce graphique, il semblerait que la température n'ait pas une grande influence sur le nombre d'objets perdus. De plus, le coefficient de corrélation de Pearson calculé n'est que de", correlation,"points.","<br>""<br>""<br>""<br>", unsafe_allow_html=True)
+st.header("Nombre d'objets trouvés en fonction de la température :")
 
+# Création d'un scatterplot avec la température sur l'axe x et objets trouvés sur l'axe y
+scatterplot = alt.Chart(df_grouped).mark_circle(size=60).encode(
+    x=alt.X('temperature:Q', title='Température'),
+    y=alt.Y('nombre_objets_trouves:Q', title="Nombre d'objets trouvés")
+)
+st.altair_chart(scatterplot, use_container_width=True)
+
+# Calcul du coefficient de corrélation
+correlation = df_grouped['temperature'].corr(df_grouped['nombre_objets_trouves']).__round__(4)
+st.write("D'après ce graphique, il semblerait que la température n'ait pas une grande influence sur le nombre d'objets perdus. De plus, le coefficient de corrélation de Pearson calculé n'est que de", correlation,"points.","<br>""<br>""<br>""<br>", unsafe_allow_html=True)
 
 
 # #################################################### Quelle est la médiane du nombre d’objets trouvés en fonction de la saison #######################################
 
-# # focntion pour trier les saisons
+# Connectez-vous à la base de données
+conn = sqlite3.connect("bdd1.db")
 
-# def get_season(date):
-#     month = date.month
-#     if 3 <= month <= 5:
-#         return "printemps"
-#     elif 6 <= month <= 8:
-#         return "été"
-#     elif 9 <= month <= 11:
-#         return "automne"
-#     else:
-#         return "hiver"
+# Exécutez une requête pour obtenir toutes les données de la table 'objet_trouve'
+query_objet_trouve = "SELECT * FROM objet_trouve"
+df_objet_trouve = pd.read_sql_query(query_objet_trouve, conn)
 
-# df_objet_trouve["Date"] = pd.to_datetime(df_objet_trouve["Date"])
+def get_season(date):
+    month = date.month
+    if 3 <= month <= 5:
+        return "printemps"
+    elif 6 <= month <= 8:
+        return "été"
+    elif 9 <= month <= 11:
+        return "automne"
+    else:
+        return "hiver"
 
-# # Ajout d'une colonne saison
-# df_objet_trouve["saison"] = df_objet_trouve["Date"].apply(get_season)
+df_objet_trouve["date"] = pd.to_datetime(df_objet_trouve["date"])
 
-# # Calcule de la mediane + regroupe par saison & nb d'objet trouvés
-# df_grouped = df_objet_trouve.groupby(["Date", "saison"]).size().reset_index(name='nombre_objets_trouves')
-# df_median = df_grouped.groupby("saison")["nombre_objets_trouves"].median().reset_index()
+# Ajout d'une colonne saison
+df_objet_trouve["saison"] = df_objet_trouve["date"].apply(get_season)
 
-# st.header("Médiane journalier du nombre d'objets trouvés par saisons :")
+# Calcule de la médiane + regroupe par saison & nb d'objet trouvés
+df_grouped = df_objet_trouve.groupby(["date", "saison"]).size().reset_index(name='nombre_objets_trouves')
+df_median = df_grouped.groupby("saison")["nombre_objets_trouves"].median().reset_index()
 
-# # Creartion du graphique
-# fig = px.bar(df_median, x='saison', y='nombre_objets_trouves', text='nombre_objets_trouves',
-#              color='saison', color_discrete_sequence=px.colors.qualitative.Set1)
+st.header("Médiane journalière du nombre d'objets trouvés par saisons :")
 
-# # Personnaliser le graphique
-# fig.update_layout(
-#     xaxis_title="Saisons",
-#     yaxis_title="Médiane du nombre d'objets trouvés / J",
-#     showlegend=False,
-#     plot_bgcolor='rgba(0,0,0,0)',
-#     xaxis=dict(
-#         tickmode='array',
-#         tickvals=df_median['saison'],
-#         ticktext=['Printemps', 'Été', 'Automne', 'Hiver']
-#     )
-# )
+# Création du graphique
+fig = px.bar(df_median, x='saison', y='nombre_objets_trouves', text='nombre_objets_trouves',
+             color='saison', color_discrete_sequence=px.colors.qualitative.Set1)
 
-# st.plotly_chart(fig)
+# Personnalisation du graphique
+fig.update_layout(
+    xaxis_title="Saisons",
+    yaxis_title="Médiane du nombre d'objets trouvés / J",
+    showlegend=False,
+    plot_bgcolor='rgba(0,0,0,0)',
+    xaxis=dict(
+        tickmode='array',
+        tickvals=df_median['saison'],
+        ticktext=['Printemps', 'Été', 'Automne', 'Hiver']
+    )
+)
 
-# st.write("On peut observer par ce graphique qu'il n'y a pas de lien notable entre la perte d'objets par les voyageurs et les saisons, donc on peut écarter le lien entre le froid et la perte d'objets par les voyageurs", "<br>""<br>""<br>""<br>", unsafe_allow_html=True)
+st.plotly_chart(fig)
 
-
+st.write("On peut observer par ce graphique qu'il n'y a pas de lien notable entre la perte d'objets par les voyageurs et les saisons, donc on peut écarter le lien entre le froid et la perte d'objets par les voyageurs", "<br>""<br>""<br>""<br>", unsafe_allow_html=True)
 
 # ##################################### Affichez le nombre d'objets trouvés en fonction du type de d'objet et de la saison sur un graphique ############################
 
-# st.header("Nombre d'objets trouvés en fonction de la saison du type d'objet ")
+# Connectez-vous à la base de données
+conn = sqlite3.connect("bdd1.db")
+
+# Exécutez une requête pour obtenir toutes les données de la table 'objet_trouve'
+query_objet_trouve = "SELECT * FROM objet_trouve"
+df_objet_trouve = pd.read_sql_query(query_objet_trouve, conn)
+
+df_objet_trouve["date"] = pd.to_datetime(df_objet_trouve["date"])
+
+# Ajout d'une colonne saison
+df_objet_trouve["saison"] = df_objet_trouve["date"].apply(get_season)
+
+st.header("Nombre d'objets trouvés en fonction de la saison du type d'objet ")
+
+# Possibilté de choisir par type d'objet
+selected_types = st.multiselect("Tri par types d'objet", df_objet_trouve["type_objet"].unique(), default=df_objet_trouve["type_objet"].unique())
+
+# Possibilité de choisir une année en particulier ou le total des années
+annees = list(df_objet_trouve["date"].dt.year.unique())
+annees.append("Total")
+
+# Création d'un selectbox pour choisir l'année
+annee_selectionnee = st.selectbox("Tri par Année", annees)
+
+# Filtrer en fonction de l'année
+if annee_selectionnee == "Total":
+    df_filtre = df_objet_trouve[df_objet_trouve["type_objet"].isin(selected_types)]
+else:
+    df_filtre = df_objet_trouve[(df_objet_trouve["date"].dt.year == annee_selectionnee) & df_objet_trouve["type_objet"].isin(selected_types)]
+
+# Création d'un DF groupé par saison et type d'objet
+df_grouped = df_filtre.groupby(['saison', 'type_objet']).size().reset_index(name='nombre_objets_trouves')
+
+# Regroupper en fonction des types d'objets
+df_grouped_filtered = df_grouped[df_grouped["type_objet"].isin(selected_types)]
+
+# Création du Graphique 
+fig = px.bar(df_grouped_filtered, x="saison", y="nombre_objets_trouves", color="type_objet", barmode="group")
+
+fig.update_layout(
+    xaxis_title="Saisons",
+    yaxis_title="Nombre d'objets trouvés"
+)
+
+st.plotly_chart(fig)
 
 
-# # Possibilté de choisir par type d'objet
-# selected_types = st.multiselect("Tri par types d'objet", df_objet_trouve["Type_objet"].unique(), default=df_objet_trouve["Type_objet"].unique())
-
-# # Possibilité de choisir une année en particulier ou le total des anneés
-# annees = list(df_objet_trouve["Date"].dt.year.unique())
-# annees.append("Total")
-
-# # Creation d'un selectbox pour choisir l'année
-# annee_selectionnee = st.selectbox("Tri par Année", annees)
-
-# # Filtrer en fonction de l'année
-# if annee_selectionnee == "Total":
-#     df_filtre = df_objet_trouve[df_objet_trouve["Type_objet"].isin(selected_types)]
-# else:
-#     df_filtre = df_objet_trouve[(df_objet_trouve["Date"].dt.year == annee_selectionnee) & df_objet_trouve["Type_objet"].isin(selected_types)]
-
-# # Creation d'un DF groupé par saison et type d'objet
-# df_grouped = df_filtre.groupby(['saison', 'Type_objet']).size().reset_index(name='nombre_objets_trouves')
-
-# # Regroupper en foction des types d'objets
-# df_grouped_filtered = df_grouped[df_grouped["Type_objet"].isin(selected_types)]
-
-# # Creation du Graphique 
-# fig = px.bar(df_grouped_filtered, x="saison", y="nombre_objets_trouves", color="Type_objet", barmode="group")
-
-# fig.update_layout(
-#     xaxis_title="Saisons",
-#     yaxis_title="Nombre d'objets trouvés"
-# )
-
-# st.plotly_chart(fig)
-
-# st.write("On peut observer de part cet histogramme, qu'il y a en effet une corrélation entre le type d'objets retrouvé et la saison. Le type d'objet Bagagerie est plus retrouvé lors de la saison de l'automne avec 7647 objets suivi de la saison estivale avec 7384 objets respectivement retrouvés.", "<br>""<br>""<br>""<br>", unsafe_allow_html=True)
+st.write("On peut observer de part cet histogramme, qu'il y a en effet une corrélation entre le type d'objets retrouvé et la saison. Le type d'objet Bagagerie est plus retrouvé lors de la saison de l'automne avec 7647 objets suivi de la saison estivale avec 7384 objets respectivement retrouvés.", "<br>""<br>""<br>""<br>", unsafe_allow_html=True)
 
 
-# st.write("<br><br><h1>Conclusion :</h1>", unsafe_allow_html=True)
-# st.write("<br><h3>Pour conclure d’après tout ces graphiques, la perte d’objets de tout type est variable selon les saisons et le type vetements n’est pas relié à la saison hivernale avec peu de différences entre les saisons.<br><br>En revanche on remarque que les voyageurs perdent plus leurs affaires de tout types et plus particulièrement de type bagagerie  pendant les saisons estivale ainsi que de l’automne avec une frequentation élevée à la Gare Paris gare de Lyon.<br><br>Cela peut etre expliqué notamment par le départ en vacances des voyageurs souvent chargés en terme de bagages lors des ces saisons, dans la gare la plus solicitée de Paris pour voyager avec une offre dédiée aux TGV.</h3>",
-#          unsafe_allow_html=True, 
-#         )
+st.write("<br><br><h1>Conclusion :</h1>", unsafe_allow_html=True)
+st.write("<br><h3>Pour conclure d’après tout ces graphiques, la perte d’objets de tout type est variable selon les saisons et le type vetements n’est pas relié à la saison hivernale avec peu de différences entre les saisons.<br><br>En revanche on remarque que les voyageurs perdent plus leurs affaires de tout types et plus particulièrement de type bagagerie  pendant les saisons estivale ainsi que de l’automne avec une frequentation élevée à la Gare Paris gare de Lyon.<br><br>Cela peut etre expliqué notamment par le départ en vacances des voyageurs souvent chargés en terme de bagages lors des ces saisons, dans la gare la plus solicitée de Paris pour voyager avec une offre dédiée aux TGV.</h3>",
+         unsafe_allow_html=True, 
+        )
