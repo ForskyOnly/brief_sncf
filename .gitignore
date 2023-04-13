@@ -44,6 +44,7 @@ share/python-wheels/
 *.egg
 MANIFEST
 bdd.db
+bdd1.db
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

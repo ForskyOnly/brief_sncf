@@ -109,12 +109,6 @@ st.write("<br>""<br>""<br>""<br>", unsafe_allow_html=True)
 
 # ########################################################### Nombre d'objets trouvés en fonction de la température ####################################################
 
-
-import sqlite3
-import pandas as pd
-import streamlit as st
-import altair as alt
-
 # Connectez-vous à la base de données
 conn = sqlite3.connect("bdd1.db")
 
@@ -155,7 +149,16 @@ conn = sqlite3.connect("bdd1.db")
 query_objet_trouve = "SELECT * FROM objet_trouve"
 df_objet_trouve = pd.read_sql_query(query_objet_trouve, conn)
 
-def get_season(date):
+def get_season(date: datetime) -> str:
+    """
+    Renvoie la saison correspondant au mois de la date passée en paramètre.
+
+    Args:
+        date (date): Objet date représentant une date.
+
+    Returns:
+        str: La saison correspondant au mois de la date passée en paramètre.
+    """
     month = date.month
     if 3 <= month <= 5:
         return "printemps"
@@ -200,7 +203,7 @@ st.write("On peut observer par ce graphique qu'il n'y a pas de lien notable entr
 
 # ##################################### Affichez le nombre d'objets trouvés en fonction du type de d'objet et de la saison sur un graphique ############################
 
-# Connectez-vous à la base de données
+
 conn = sqlite3.connect("bdd1.db")
 
 # Exécutez une requête pour obtenir toutes les données de la table 'objet_trouve'
