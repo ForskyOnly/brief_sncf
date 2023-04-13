@@ -11,7 +11,6 @@ def creer_base_donnees():
         CREATE TABLE IF NOT EXISTS gare (
             id_gare INTEGER PRIMARY KEY AUTOINCREMENT,
             nom_gare TEXT NOT NULL,
-            code_postal INTEGER,
             frequentation_2019 INTEGER,
             frequentation_2020 INTEGER,
             frequentation_2021 INTEGER,
@@ -87,6 +86,8 @@ def importer_donnees_gares(urls, conn):
                 break
             
 
+
+
 coordonnees = {
     "Paris Austerlitz": (48.840609, 2.366563),
     "Paris Bercy": (48.840889, 2.381641),
@@ -105,31 +106,32 @@ def importer_frequentation_gares(url, conn):
     cursor = conn.cursor()
 
     if "records" in data:
-        for record in data["records"]:
-            gare_info = {
-                "nom_gare": record["fields"]["nom_gare"],
-                "frequentation_2019": record["fields"]["total_voyageurs_2019"],
-                "frequentation_2020": record["fields"]["total_voyageurs_2020"],
-                "frequentation_2021": record["fields"]["total_voyageurs_2021"],
-            }
+        for index, record in enumerate(data["records"]):
+            if index > 0:
+                gare_info = {
+                    "nom_gare": record["fields"]["nom_gare"],
+                    "frequentation_2019": record["fields"]["total_voyageurs_2019"],
+                    "frequentation_2020": record["fields"]["total_voyageurs_2020"],
+                    "frequentation_2021": record["fields"]["total_voyageurs_2021"],
+                }
 
-            if gare_info["nom_gare"] == "Paris Bercy Bourgogne - Pays d'Auvergne":
-                gare_info["nom_gare"] = "Paris Bercy"
+                if gare_info["nom_gare"] == "Paris Bercy Bourgogne - Pays d'Auvergne":
+                    gare_info["nom_gare"] = "Paris Bercy"
 
-            if gare_info["nom_gare"] in coordonnees:
-                gare_info["latitude"], gare_info["longitude"] = coordonnees[gare_info["nom_gare"]]
+                if gare_info["nom_gare"] in coordonnees:
+                    gare_info["latitude"], gare_info["longitude"] = coordonnees[gare_info["nom_gare"]]
 
-            frequentation_moyenne = (gare_info["frequentation_2019"] + gare_info["frequentation_2020"] + gare_info["frequentation_2021"]) // 3
-            gare_info["frequentation_2022"] = frequentation_moyenne
+                frequentation_moyenne = (gare_info["frequentation_2019"] + gare_info["frequentation_2020"] + gare_info["frequentation_2021"]) // 3
+                gare_info["frequentation_2022"] = frequentation_moyenne
 
-            cursor.execute("""
-                INSERT OR IGNORE INTO gare (nom_gare, frequentation_2019, frequentation_2020, frequentation_2021, frequentation_2022, latitude, longitude)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, (gare_info["nom_gare"], gare_info["frequentation_2019"], gare_info["frequentation_2020"], gare_info["frequentation_2021"], gare_info["frequentation_2022"], gare_info["latitude"], gare_info["longitude"]))
+                cursor.execute("""
+                    INSERT OR IGNORE INTO gare (nom_gare, frequentation_2019, frequentation_2020, frequentation_2021, frequentation_2022, latitude, longitude)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                """, (gare_info["nom_gare"], gare_info["frequentation_2019"], gare_info["frequentation_2020"], gare_info["frequentation_2021"], gare_info["frequentation_2022"], gare_info["latitude"], gare_info["longitude"]))
 
     conn.commit()
     
-
+    
 
 def importer_donnees_meteo(csv_path, conn):
     cursor = conn.cursor()
@@ -156,3 +158,4 @@ importer_donnees_gares(urls, conn)
 importer_frequentation_gares(url_frequentation, conn)
 importer_donnees_meteo(csv_path, conn)
 conn.close()
+
