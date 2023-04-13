@@ -1,45 +1,40 @@
+def get_season(date):
+    month = date.month
+    if 3 <= month <= 5:
+        return "printemps"
+    elif 6 <= month <= 8:
+        return "été"
+    elif 9 <= month <= 11:
+        return "automne"
+    else:
+        return "hiver"
 
-def importer_donnees_gares(urls):
-    
-    data = []
+df_objet_trouve["Date"] = pd.to_datetime(df_objet_trouve["Date"])
 
-    rows = 50
-    
-    for url in urls:
-        start = 0
-        total_records = None
-        
-        while total_records is None or start < total_records:
-            response = requests.get(url, params={"rows": rows, "start": start})
-            
-            if response.status_code == 200:
-                response_json = response.json()
-                records = response_json["records"]
-                total_records = response_json["nhits"]
-                
-                for record in records:
-                    objet_trouve = {
-                        "Code gare": record["fields"]["gc_obo_gare_origine_r_code_uic_c"],
-                        "Nom gare": record["fields"]["gc_obo_gare_origine_r_name"],
-                        "Type d'objet": record["fields"]["gc_obo_type_c"],
-                        "Nature de l'objet": record["fields"]["gc_obo_nature_c"],
-                        "Type d'enregistrement": record["fields"]["gc_obo_nom_recordtype_sc_c"],
-                        "Date": record["fields"]["date"]
-                    }
-                    data.append(objet_trouve)
-                
-                start += rows
-            
-            else:
-                print(response.status_code)
-                break
-    
-    return data
+# Ajout d'une colonne saison
+df_objet_trouve["saison"] = df_objet_trouve["Date"].apply(get_season)
 
+# Calcule de la mediane + regroupe par saison & nb d'objet trouvés
+df_grouped = df_objet_trouve.groupby(["Date", "saison"]).size().reset_index(name='nombre_objets_trouves')
+df_median = df_grouped.groupby("saison")["nombre_objets_trouves"].median().reset_index()
 
+st.header("Médiane journalier du nombre d'objets trouvés par saisons :")
 
-donnees= importer_donnees_gares(urls)
+# Creartion du graphique
+fig = px.box(df_median, x='saison', y='nombre_objets_trouves', text='nombre_objets_trouves',
+             color='saison', color_discrete_sequence=px.colors.qualitative.Set1)
 
-datatest=pd.DataFrame(donnees)
+# Personnaliser le graphique
+fig.update_layout(
+    xaxis_title="Saisons",
+    yaxis_title="Médiane du nombre d'objets trouvés / J",
+    showlegend=False,
+    plot_bgcolor='rgba(0,0,0,0)',
+    xaxis=dict(
+        tickmode='array',
+        tickvals=df_median['saison'],
+        ticktext=['Printemps', 'Été', 'Automne', 'Hiver']
+    )
+)
 
-print(datatest.info())
+st.plotly_chart(fig)
