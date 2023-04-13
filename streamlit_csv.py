@@ -213,10 +213,10 @@ fig.update_layout(
 
 st.plotly_chart(fig)
 
-st.write("On peut observer de part cet histogramme, qu'il y a en effet une corrélation entre le type d'objets retrouvé et la saison. Le type d'objet Bagagerie est plus retrouvé lors de la saison de l'automne avec 7647 objets suivi de la saison estivale avec 7384 objets respectivement retrouvés.", "<br>""<br>""<br>""<br>", unsafe_allow_html=True)
+st.write("On peut observer de par cet histogramme, qu'il y a en effet une corrélation entre le type d'objets retrouvé et la saison. Le type d'objet Bagagerie est plus retrouvé lors de la saison de l'automne avec 7647 objets suivi de la saison estivale avec 7384 objets respectivement retrouvés.", "<br>""<br>""<br>""<br>", unsafe_allow_html=True)
 
 
 st.write("<br><br><h1>Conclusion :</h1>", unsafe_allow_html=True)
-st.write("<br><h3>Pour conclure d’après tout ces graphiques, la perte d’objets de tout type est variable selon les saisons mais plus prononcé pour les saisons d'hiver ainsi que de printemps et le type vetements n’est pas relié à la saison hivernale avec peu de différences entre les saisons.<br><br>En revanche on remarque que les voyageurs perdent plus leurs affaires plus particulièrement de type bagagerie  pendant les saisons estivale ainsi que de l’automne avec une frequentation élevée à la Gare Paris gare de Lyon.<br><br>Cela peut etre expliqué notamment par le départ en vacances des voyageurs souvent chargés en terme de bagages lors des ces saisons, dans la gare la plus solicitée de Paris pour voyager avec une offre dédiée aux TGV.</h3>",
+st.write("<br><h3>Pour conclure: d’après tout ces graphiques, la perte d’objets de tout type est variable selon les saisons; et le type 'vetements' n’est pas relié à la saison hivernale. Avec peu de différences entre les saisons.<br><br>En revanche on remarque que les voyageurs perdent plus leurs affaires de tout types et plus particulièrement de type bagagerie  pendant les saisons estivale ainsi qu'en automne, avec une frequentation élevée à la Gare Paris gare de Lyon.<br><br>Cela peut etre expliqué notamment par le départ en vacances des voyageurs souvent chargés en terme de bagages lors des ces saisons, dans la gare la plus solicitée de Paris pour voyager avec une offre dédiée aux TGV.</h3>",
          unsafe_allow_html=True, 
         )

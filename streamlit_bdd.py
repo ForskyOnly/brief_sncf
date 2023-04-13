@@ -22,9 +22,9 @@ if st.button(label="Mettre à jour les données", help="Mettre à jour les donn�
     
 ############################################## Calculez entre 2019 et 2022 la somme du nombre d’objets trouvés par semaine ###########################################
     
-conn = sqlite3.connect('bdd1.db')
 
-# Exécutez une requête pour obtenir toutes les données de la table 'objet_trouve'
+
+# obtention de tout les données de objets trouvés
 query = "SELECT * FROM objet_trouve"
 df_objet_trouve = pd.read_sql_query(query, conn)
 
@@ -64,15 +64,11 @@ st.write("<br>""<br>""<br>""<br>", unsafe_allow_html=True)
 
 ################################################################### AFFICHER LA CARTE ###############################################################################
 
-
-# Connectez-vous à la base de données
-conn = sqlite3.connect("bdd1.db")
-
-# Exécutez une requête pour obtenir toutes les données de la table 'objet_trouve'
+# obtention de tout les données d'objets trouvés
 query_objet_trouve = "SELECT * FROM objet_trouve"
 df_objet_trouve = pd.read_sql_query(query_objet_trouve, conn)
 
-# Exécutez une requête pour obtenir toutes les données de la table 'gare'
+# obtention de tout les donées gare
 query_gare = "SELECT * FROM gare"
 df_gare = pd.read_sql_query(query_gare, conn)
 
@@ -109,14 +105,12 @@ st.write("<br>""<br>""<br>""<br>", unsafe_allow_html=True)
 
 # ########################################################### Nombre d'objets trouvés en fonction de la température ####################################################
 
-# Connectez-vous à la base de données
-conn = sqlite3.connect("bdd1.db")
 
-# Exécutez une requête pour obtenir toutes les données de la table 'objet_trouve'
+# obtention de tout les données de objets trouvés
 query_objet_trouve = "SELECT * FROM objet_trouve"
 df_objet_trouve = pd.read_sql_query(query_objet_trouve, conn)
 
-# Exécutez une requête pour obtenir toutes les données de la table 'meteo'
+# obtention de tout les données de meteo
 query_meteo = "SELECT * FROM meteo"
 df_meteo = pd.read_sql_query(query_meteo, conn)
 
@@ -142,10 +136,8 @@ st.write("D'après ce graphique, il semblerait que la température n'ait pas une
 
 # #################################################### Quelle est la médiane du nombre d’objets trouvés en fonction de la saison #######################################
 
-# Connectez-vous à la base de données
-conn = sqlite3.connect("bdd1.db")
 
-# Exécutez une requête pour obtenir toutes les données de la table 'objet_trouve'
+# obtention de tout les données de objets trouvés
 query_objet_trouve = "SELECT * FROM objet_trouve"
 df_objet_trouve = pd.read_sql_query(query_objet_trouve, conn)
 
@@ -180,14 +172,14 @@ df_median = df_grouped.groupby("saison")["nombre_objets_trouves"].median().reset
 
 st.header("Médiane journalière du nombre d'objets trouvés par saisons :")
 
-# Création du graphique
-fig = px.bar(df_median, x='saison', y='nombre_objets_trouves', text='nombre_objets_trouves',
-             color='saison', color_discrete_sequence=px.colors.qualitative.Set1)
+# Création du boxplot
+fig = px.box(df_grouped, x="saison", y="nombre_objets_trouves",
+             color="saison", color_discrete_sequence=px.colors.qualitative.Set1)
 
-# Personnalisation du graphique
+# Personnaliser le graphique
 fig.update_layout(
     xaxis_title="Saisons",
-    yaxis_title="Médiane du nombre d'objets trouvés / J",
+    yaxis_title="Nombre d'objets trouvés / J",
     showlegend=False,
     plot_bgcolor='rgba(0,0,0,0)',
     xaxis=dict(
@@ -204,9 +196,9 @@ st.write("On peut observer par ce graphique qu'il n'y a pas de lien notable entr
 # ##################################### Affichez le nombre d'objets trouvés en fonction du type de d'objet et de la saison sur un graphique ############################
 
 
-conn = sqlite3.connect("bdd1.db")
 
-# Exécutez une requête pour obtenir toutes les données de la table 'objet_trouve'
+
+# obtention de tout les données de objets trouvés
 query_objet_trouve = "SELECT * FROM objet_trouve"
 df_objet_trouve = pd.read_sql_query(query_objet_trouve, conn)
 
@@ -250,10 +242,10 @@ fig.update_layout(
 st.plotly_chart(fig)
 
 
-st.write("On peut observer de part cet histogramme, qu'il y a en effet une corrélation entre le type d'objets retrouvé et la saison. Le type d'objet Bagagerie est plus retrouvé lors de la saison de l'automne avec 7647 objets suivi de la saison estivale avec 7384 objets respectivement retrouvés.", "<br>""<br>""<br>""<br>", unsafe_allow_html=True)
+st.write("On peut observer de par cet histogramme, qu'il y a en effet une corrélation entre le type d'objets retrouvé et la saison. Le type d'objet Bagagerie est plus retrouvé lors de la saison de l'automne avec 7647 objets suivi de la saison estivale avec 7384 objets respectivement retrouvés.", "<br>""<br>""<br>""<br>", unsafe_allow_html=True)
 
 
 st.write("<br><br><h1>Conclusion :</h1>", unsafe_allow_html=True)
-st.write("<br><h3>Pour conclure d’après tout ces graphiques, la perte d’objets de tout type est variable selon les saisons et le type vetements n’est pas relié à la saison hivernale avec peu de différences entre les saisons.<br><br>En revanche on remarque que les voyageurs perdent plus leurs affaires de tout types et plus particulièrement de type bagagerie  pendant les saisons estivale ainsi que de l’automne avec une frequentation élevée à la Gare Paris gare de Lyon.<br><br>Cela peut etre expliqué notamment par le départ en vacances des voyageurs souvent chargés en terme de bagages lors des ces saisons, dans la gare la plus solicitée de Paris pour voyager avec une offre dédiée aux TGV.</h3>",
+st.write("<br><h3>Pour conclure: d’après tout ces graphiques, la perte d’objets de tout type est variable selon les saisons; et le type 'vetements' n’est pas relié à la saison hivernale. Avec peu de différences entre les saisons.<br><br>En revanche on remarque que les voyageurs perdent plus leurs affaires de tout types et plus particulièrement de type bagagerie  pendant les saisons estivale ainsi qu'en automne, avec une frequentation élevée à la Gare Paris gare de Lyon.<br><br>Cela peut etre expliqué notamment par le départ en vacances des voyageurs souvent chargés en terme de bagages lors des ces saisons, dans la gare la plus solicitée de Paris pour voyager avec une offre dédiée aux TGV.</h3>",
          unsafe_allow_html=True, 
         )
