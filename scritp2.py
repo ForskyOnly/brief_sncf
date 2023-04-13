@@ -146,20 +146,20 @@ df_objet_trouve["Date"] = pd.to_datetime(df_objet_trouve["Date"])
 # Ajout d'une colonne saison
 df_objet_trouve["saison"] = df_objet_trouve["Date"].apply(get_season)
 
-# Calcule de la mediane + regroupe par saison & nb d'objet trouvés
-df_grouped = df_objet_trouve.groupby(["Date", "saison"]).size().reset_index(name='nombre_objets_trouves')
-df_median = df_grouped.groupby("saison")["nombre_objets_trouves"].median().reset_index()
-
 st.header("Médiane journalier du nombre d'objets trouvés par saisons :")
 
-# Creartion du graphique
-fig = px.bar(df_median, x='saison', y='nombre_objets_trouves', text='nombre_objets_trouves',
-             color='saison', color_discrete_sequence=px.colors.qualitative.Set1)
+# Calcule de la mediane + regroupe par saison & nb d'objet trouvés
+df_grouped = df_objet_trouve.groupby(["saison", "Date"]).size().reset_index(name='nombre_objets_trouves')
+df_median = df_grouped.groupby("saison")["nombre_objets_trouves"].median().reset_index()
+
+# Création du boxplot
+fig = px.box(df_grouped, x="saison", y="nombre_objets_trouves",
+             color="saison", color_discrete_sequence=px.colors.qualitative.Set1)
 
 # Personnaliser le graphique
 fig.update_layout(
     xaxis_title="Saisons",
-    yaxis_title="Médiane du nombre d'objets trouvés / J",
+    yaxis_title="Nombre d'objets trouvés / J",
     showlegend=False,
     plot_bgcolor='rgba(0,0,0,0)',
     xaxis=dict(
@@ -170,6 +170,7 @@ fig.update_layout(
 )
 
 st.plotly_chart(fig)
+
 
 st.write("On peut observer par ce graphique qu'il n'y a pas de lien notable entre la perte d'objets par les voyageurs et les saisons, donc on peut écarter le lien entre le froid et la perte d'objets par les voyageurs", "<br>""<br>""<br>""<br>", unsafe_allow_html=True)
 
@@ -216,6 +217,6 @@ st.write("On peut observer de part cet histogramme, qu'il y a en effet une corr�
 
 
 st.write("<br><br><h1>Conclusion :</h1>", unsafe_allow_html=True)
-st.write("<br><h3>Pour conclure d’après tout ces graphiques, la perte d’objets de tout type est variable selon les saisons et le type vetements n’est pas relié à la saison hivernale avec peu de différences entre les saisons.<br><br>En revanche on remarque que les voyageurs perdent plus leurs affaires de tout types et plus particulièrement de type bagagerie  pendant les saisons estivale ainsi que de l’automne avec une frequentation élevée à la Gare Paris gare de Lyon.<br><br>Cela peut etre expliqué notamment par le départ en vacances des voyageurs souvent chargés en terme de bagages lors des ces saisons, dans la gare la plus solicitée de Paris pour voyager avec une offre dédiée aux TGV.</h3>",
+st.write("<br><h3>Pour conclure d’après tout ces graphiques, la perte d’objets de tout type est variable selon les saisons mais plus prononcé pour les saisons d'hiver ainsi que de printemps et le type vetements n’est pas relié à la saison hivernale avec peu de différences entre les saisons.<br><br>En revanche on remarque que les voyageurs perdent plus leurs affaires plus particulièrement de type bagagerie  pendant les saisons estivale ainsi que de l’automne avec une frequentation élevée à la Gare Paris gare de Lyon.<br><br>Cela peut etre expliqué notamment par le départ en vacances des voyageurs souvent chargés en terme de bagages lors des ces saisons, dans la gare la plus solicitée de Paris pour voyager avec une offre dédiée aux TGV.</h3>",
          unsafe_allow_html=True, 
         )

@@ -1,0 +1,40 @@
+def get_season(date):
+    month = date.month
+    if 3 <= month <= 5:
+        return "printemps"
+    elif 6 <= month <= 8:
+        return "été"
+    elif 9 <= month <= 11:
+        return "automne"
+    else:
+        return "hiver"
+
+df_objet_trouve["Date"] = pd.to_datetime(df_objet_trouve["Date"])
+
+# Ajout d'une colonne saison
+df_objet_trouve["saison"] = df_objet_trouve["Date"].apply(get_season)
+
+# Calcule de la mediane + regroupe par saison & nb d'objet trouvés
+df_grouped = df_objet_trouve.groupby(["Date", "saison"]).size().reset_index(name='nombre_objets_trouves')
+df_median = df_grouped.groupby("saison")["nombre_objets_trouves"].median().reset_index()
+
+st.header("Médiane journalier du nombre d'objets trouvés par saisons :")
+
+# Creartion du graphique
+fig = px.box(df_median, x='saison', y='nombre_objets_trouves', text='nombre_objets_trouves',
+             color='saison', color_discrete_sequence=px.colors.qualitative.Set1)
+
+# Personnaliser le graphique
+fig.update_layout(
+    xaxis_title="Saisons",
+    yaxis_title="Médiane du nombre d'objets trouvés / J",
+    showlegend=False,
+    plot_bgcolor='rgba(0,0,0,0)',
+    xaxis=dict(
+        tickmode='array',
+        tickvals=df_median['saison'],
+        ticktext=['Printemps', 'Été', 'Automne', 'Hiver']
+    )
+)
+
+st.plotly_chart(fig)
