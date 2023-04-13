@@ -1,0 +1,45 @@
+
+def importer_donnees_gares(urls):
+    
+    data = []
+
+    rows = 50
+    
+    for url in urls:
+        start = 0
+        total_records = None
+        
+        while total_records is None or start < total_records:
+            response = requests.get(url, params={"rows": rows, "start": start})
+            
+            if response.status_code == 200:
+                response_json = response.json()
+                records = response_json["records"]
+                total_records = response_json["nhits"]
+                
+                for record in records:
+                    objet_trouve = {
+                        "Code gare": record["fields"]["gc_obo_gare_origine_r_code_uic_c"],
+                        "Nom gare": record["fields"]["gc_obo_gare_origine_r_name"],
+                        "Type d'objet": record["fields"]["gc_obo_type_c"],
+                        "Nature de l'objet": record["fields"]["gc_obo_nature_c"],
+                        "Type d'enregistrement": record["fields"]["gc_obo_nom_recordtype_sc_c"],
+                        "Date": record["fields"]["date"]
+                    }
+                    data.append(objet_trouve)
+                
+                start += rows
+            
+            else:
+                print(response.status_code)
+                break
+    
+    return data
+
+
+
+donnees= importer_donnees_gares(urls)
+
+datatest=pd.DataFrame(donnees)
+
+print(datatest.info())
